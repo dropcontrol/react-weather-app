@@ -11,6 +11,7 @@ import axios from "axios";
 function App() {
   const WEATHER_KEY = process.env.REACT_APP_WEATHER_KEY;
   // console.log(WEATHER_KEY);
+  
   const [loading, setLoading] = useState(false);
   const [city, setCity] = useState("");
   const [results, setResults] = useState({
