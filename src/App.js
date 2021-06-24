@@ -2,12 +2,16 @@
 import Title from "./components/Title";
 import Form from "./components/Form";
 import Results from "./components/Results";
+import Loading from "./components/Loading";
 import './App.css';
 
 import { useState } from "react";
 import axios from "axios";
 
 function App() {
+  const WEATHER_KEY = process.env.REACT_APP_WEATHER_KEY;
+  // console.log(WEATHER_KEY);
+  const [loading, setLoading] = useState(false);
   const [city, setCity] = useState("");
   const [results, setResults] = useState({
     country: "",
@@ -18,7 +22,8 @@ function App() {
   })
   const getWeather = (e) => {
       e.preventDefault();
-      axios.get(`http://api.weatherapi.com/v1/current.json?key=30c298482987442e97e73811212406&q=${city}&aqi=no`)
+      setLoading(true);
+      axios.get(`https://api.weatherapi.com/v1/current.json?key=${WEATHER_KEY}&q=${city}&aqi=no`)
       .then(res => {
         setResults({
           country: res.data.location.country,
@@ -26,7 +31,9 @@ function App() {
           temperature: res.data.current.temp_c,
           conditionText: res.data.current.condition.text,
           icon: res.data.current.condition.icon
-        })
+        });
+        setCity("");
+        setLoading(false);
       })
       .catch(err => alert("エラーが発生しました。ページをリロードして、もう一度トライしてください。"));
   }
@@ -35,8 +42,8 @@ function App() {
     <div className="wrapper">
       <div className="container">
         <Title />
-        <Form setCity={setCity} getWeather={getWeather} />
-        <Results results={results} />
+        <Form setCity={setCity} getWeather={getWeather} city={city}/>
+        {loading ? <Loading /> : <Results results={results} />}
       </div>
     </div>
   );
